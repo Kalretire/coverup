@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>웹 페이지 캡처</title>
+  <style>
+    #container {
+      margin: 0px auto;
+      width: 500px;
+      height: 375px;
+      border: 10px #333 solid;
+    }
+    #videoElement {
+      width: 500px;
+      height: 375px;
+      background-color: #666;
+    }
+  </style>
+</head>
+
+<body>
+<div id="container">
+  <video autoplay="true" id="videoElement"></video>
+</div>
+
+<script>
+  var video = document.querySelector("#videoElement");
+
+  if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+              video.srcObject = stream;
+            })
+            .catch(function (error) {
+              console.log("Something went wrong!");
+            });
+  }
+
+  // 'w' 키 누르면 캡처하고 저장
+  window.addEventListener('keydown', function (event) {
+    if (event.key === 'w') {
+      captureAndSave();
+    }
+  });
+
+  // 캡처하고 이미지로 저장
+  function captureAndSave() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 500; // 조절 가능
+    canvas.height = 375; // 조절 가능
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+
+    canvas.toBlob(function(blob) {
+      const formData = new FormData();
+      formData.append('file', blob, 'captured_image.png');
+
+      // Send the file to the server using XMLHttpRequest
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/posttester', true);
+      xhr.send(formData);
+    }, 'image/png');
+
+  }
+</script>
+</body>
+</html>
