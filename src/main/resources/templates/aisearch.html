@@ -33,7 +33,24 @@
   <!-- responsive style -->
   <link href="/css/responsive.css" rel="stylesheet" />
 
+  <style>
+
+    #container {
+      width: 100%;
+      height: 100%;
+      margin: 0 auto; /* container 영역을 브라우저에서 가운데 정렬하기 위해 auto설정 */
+      text-align: center; /* inline-block화 된 div들을 텍스트 마냥 center로 정렬*/
+    }
+
+    #container div{
+      display: inline-block; /* 가로로 나열하기 위해 block레벨 요소를 inline-block레벨로 전환 */
+      width: 200px; /* 영역 크기 지정 안해주면 inline 레벨처럼 내용물 만큼만 차지하기 때문에 크기 지정 */
+      height: 200px; /* 영역 크기 지정 안해주면 inline 레벨처럼 내용물 만큼만 차지하기 때문에 크기 지정 */
+    }
+  </style>
+
 </head>
+
 
 <body class="sub_page">
 
@@ -99,16 +116,18 @@
       <!-- end header section -->
     </div>
 
-    <!-- chocolate section -->
+    <!--login section -->
 
-    <form action="/recommand" method="post" enctype="multipart/form-data">>
-      <label for="txt">이름:</label>
-      <input type="text" id="txt" name="txt" required minlength="4" maxlength="8" size="10" />
-
-      <input type="submit" value="제출" />
+<!-- My Page Section -->
+    <form action="/recommand" method="post" enctype="multipart/form-data">
+      이름 : <input type="text" id="txtzz" name="txtzz"><br>
+      <input type="submit">
     </form>
 
-    <!-- end chocolate section -->
+    <!-- End My Page Section -->
+    <!-- end login section -->
+
+
 
     <!-- info section -->
     <section class="info_section layout_padding2">
@@ -230,34 +249,50 @@
     </section>
 
     <!-- end info_section -->
-
-</div>
-
-<!-- footer section -->
-<footer class="container-fluid footer_section">
-  <div class="container">
-    <div class="col-md-11 col-lg-8 mx-auto">
-      <p>
-        &copy; <span id="displayYear"></span> All Rights Reserved By
-        <a href="https://html.design/">Free Html Templates</a>
-      </p>
-    </div>
   </div>
-</footer>
-<!-- footer section -->
 
-<!-- jQery -->
-<script  src="/js/jquery-3.4.1.min.js"></script>
-<!-- bootstrap js -->
-<script  src="/js/bootstrap.js"></script>
-<!-- slick slider -->
-<script  src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick.min.js"></script>
-<!-- custom js -->
-<script  src="/js/custom.js"></script>
-<!-- Google Map -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
-<!-- End Google Map -->
+  <!-- footer section -->
+  <footer class="container-fluid footer_section">
+    <div class="container">
+      <div class="col-md-11 col-lg-8 mx-auto">
+        <p>
+          &copy; <span id="displayYear"></span> All Rights Reserved By
+          <a href="https://html.design/">Free Html Templates</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+  <!-- footer section -->
 
+  <!-- jQery -->
+  <script  src="/js/jquery-3.4.1.min.js"></script>
+  <!-- bootstrap js -->
+  <script  src="/js/bootstrap.js"></script>
+  <!-- slick slider -->
+  <script  src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick.min.js"></script>
+  <!-- custom js -->
+  <script  src="/js/custom.js"></script>
+  <!-- Google Map -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+  <!-- End Google Map -->
+  <!--프로필사진 업로드 script-->
+  <script>
+    // 파일 업로드 버튼이 클릭되었을 때의 동작을 정의합니다.
+    document.getElementById("profileImageInput").addEventListener("change", function(event) {
+      const file = event.target.files[0]; // 업로드된 파일 가져오기
+      const reader = new FileReader();
+  
+      // 파일 읽기가 완료되었을 때의 동작을 정의합니다.
+      reader.onload = function(e) {
+        const imageElement = document.querySelector(".profile-picture img");
+        imageElement.src = e.target.result; // 읽은 파일 데이터를 이미지 소스로 설정
+      };
+  
+      // 파일 읽기 작업을 수행합니다.
+      reader.readAsDataURL(file);
+    });
+  </script>
+  <!--프로필 업로드 끝-->
 </body>
 
 </html>

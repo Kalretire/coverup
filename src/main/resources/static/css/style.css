@@ -1120,6 +1120,7 @@ login section
 
 .info_section .info_insta .insta_box p {
   margin: 0;
+  margin: 0;
 }
 
 .info_section .info_insta .insta_box:not(:nth-last-child(1)) {
@@ -1189,12 +1190,7 @@ login section
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
 
-.profile-picture img {
-  max-width: 100px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  margin-bottom: 15px; /* 프로필 사진과 다음 요소 간 여백 */
-}
+
 
 #kakaoId, #name, #skinType {
   font-weight: bold;
