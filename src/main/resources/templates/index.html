@@ -40,11 +40,12 @@
   <div class="main_body_content">
 
     <div class="hero_area">
+
       <!-- header section strats -->
       <header class="header_section">
         <div class="container-fluid">
           <nav class="navbar navbar-expand-lg custom_nav-container ">
-            <a class="navbar-brand" href="index">
+            <a class="navbar-brand" href="index" >
               Coverup
             </a>
             </a>
@@ -57,41 +58,40 @@
                 <li class="nav-item active">
                   <a class="nav-link" href="productRecommand">제품 추천 <span class="sr-only">(current)</span></a>
                 </li>
+                <!--                <li class="nav-item active">-->
+                <!--                  <a class="nav-link" href="#">조합 추천 <span class="sr-only">(current)</span></a>-->
+                <!--                </li>-->
                 <li class="nav-item active">
-                  <a class="nav-link" href="aisea">조합 추천 <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="javascript:handleAIClick()">AI 추천 <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
-                  <a class="nav-link" href="AIrecommand">AI 추천 <span class="sr-only">(current)</span></a>
-                </li>
-
-<!--                <li class="nav-item active">-->
-<!--                  <a class="nav-link" href="creatRecommand.html">creater 추천 <span class="sr-only">(current)</span></a>-->
-<!--                </li>-->
-
-
-
-
 
                 <li class="nav-item">
-                  <a class="nav-link" href="community"> community</a>
+                  <a class="nav-link" href="community" > community</a>
                 </li>
-                
-               
-<!--                <li class="nav-item">-->
-<!--                  <a class="nav-link" href="contact.html">Contact Us</a>-->
-<!--                </li>-->
-                <li class="nav-item active">
-                  <a class="nav-link" href="productRating">평가하기 <span class="sr-only">(current)</span></a>
+
+                <li class="nav-item" id="loginNavItem">
+                  <a class="nav-link" href="javascript:kakaoToggle();"><img src="/images/KakaoTalk_20231121_161206860.png" style="height:40px" />
+                  </a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="login">로그인</a>
+
+
+
+                <li class="nav-item" id="logoutNavItem" style="display: none;">
+                  <a class="nav-link" href="javascript:kakaoLogout();">logout</a>
                 </li>
+
               </ul>
-              <div class="quote_btn-container">
+              <!--마이페이지 로그인여부에따라 보이거나 안보이게끔 구현-->
+              <div class="quote_btn-container" id="mypageContainer" style="display: none;">
                 <a href="mypage">
                   <i class="fa fa-user" aria-hidden="true"></i>
                 </a>
               </div>
+              <!--마이페이지 end-->
+
+
+
+
             </div>
           </nav>
         </div>
@@ -529,7 +529,7 @@
                 <a href="#">
                   조합 추천
                 </a>
-                <a href="AIrecommand">
+                <a href="aicommunity">
                  AI 추천
                 </a>
                 <a href="community">
@@ -632,6 +632,181 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
   <!-- End Google Map -->
 
+
+  <!-- 로그인 여부에 따라 작동하는 스크립트 -->
+
+
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+  <script>
+    function updateLoginButtonVisibility() {
+      const accessToken = window.Kakao.Auth.getAccessToken();
+
+      if (accessToken) {
+        // User is logged in, show the "마이페이지" link
+        document.getElementById("mypageContainer").style.display = "block";
+        document.getElementById("loginNavItem").style.display = "none";
+        document.getElementById("logoutNavItem").style.display = "block";
+      } else {
+        // User is not logged in, hide the "마이페이지" link
+        document.getElementById("mypageContainer").style.display = "none";
+        document.getElementById("loginNavItem").style.display = "block";
+        document.getElementById("logoutNavItem").style.display = "none";
+      }
+    }
+
+    window.onload = function () {
+      // Call the function on page load
+      updateLoginButtonVisibility();
+    };
+
+    window.Kakao.init("2f01f2c9fac2c1e3a5f0acd8abfb9d79");
+
+    function kakaoToggle() {
+      const accessToken = window.Kakao.Auth.getAccessToken();
+
+      if (accessToken) {
+        // User is logged in, perform logout
+        kakaoLogout();
+      } else {
+        // User is not logged in, perform login
+        kakaoLogin();
+      }
+    }
+
+    function kakaoLogin() {
+      window.Kakao.Auth.login({
+        scope: 'profile_nickname,profile_image,account_email',
+        success: function (authObj) {
+          console.log(authObj);
+          window.Kakao.API.request({
+            url: '/v2/user/me',
+            success: function (res) {
+              const kakao_account = res.kakao_account;
+              console.log(kakao_account);
+
+              // 카카오 로그인 성공 시 loginNavItem을 숨깁니다.
+              document.getElementById("mypageContainer").style.display = "block";
+              document.getElementById("loginNavItem").style.display = "none";
+              document.getElementById("logoutNavItem").style.display = "block";
+
+              // Save data to MySQL
+              saveDataToMySQL();
+            }
+          });
+        },
+        fail: function (error) {
+          console.error("Kakao login failed:", error);
+
+          // 카카오 로그인 실패 시 loginNavItem을 그대로 나타냅니다.
+          document.getElementById("mypageContainer").style.display = "none";
+          document.getElementById("loginNavItem").style.display = "block";
+          document.getElementById("logoutNavItem").style.display = "none";
+        }
+      });
+    }
+
+    <!--기존의 로그아웃 function-->
+    <!--    function kakaoLogout() {-->
+    <!--      window.Kakao.Auth.logout(function () {-->
+    <!--        console.log('Logout successful');-->
+    <!--        // Update the navigation items after logout-->
+    <!--        document.getElementById("mypageContainer").style.display = "none";-->
+    <!--        document.getElementById("loginNavItem").style.display = "block";-->
+    <!--        document.getElementById("logoutNavItem").style.display = "none";-->
+    <!--      });-->
+    <!--    }-->
+
+    <!--로그아웃시 토큰 삭제 로직-->
+    function kakaoLogout() {
+      const accessToken = window.Kakao.Auth.getAccessToken();
+
+
+      $.ajax({
+        type: 'POST',
+        url: '/logout',  // Use the appropriate endpoint URL
+        data: { accessToken: accessToken },
+        success: function (response) {
+          console.log('Logout successful:', response);
+          // Update the navigation items after logout
+          document.getElementById("mypageContainer").style.display = "none";
+          document.getElementById("loginNavItem").style.display = "block";
+          document.getElementById("logoutNavItem").style.display = "none";
+          // Call Kakao logout after removing the token on the server
+          window.Kakao.Auth.logout();
+        },
+        error: function (error) {
+          console.error('Error during logout:', error);
+        }
+      });
+    }
+
+  </script>
+
+  <script>
+    function saveDataToMySQL() {
+      const accessToken = window.Kakao.Auth.getAccessToken();
+
+      window.Kakao.API.request({
+        url: '/v2/user/me',
+        success: function (res) {
+          let users;
+
+          // Check if res.kakao_account is an array
+          if (Array.isArray(res.kakao_account)) {
+            users = res.kakao_account;
+          } else if (res.kakao_account) {
+            // If not an array, consider it as a single user
+            users = [res.kakao_account];
+          } else {
+            console.error('Error: res.kakao_account is neither an array nor an object');
+            return;
+          }
+
+          users.forEach(user => {
+            const userData = {
+              nickname: user.profile.nickname,
+              profile_image_url: user.profile.profile_image_url,
+              email: user.email,
+              accessToken: accessToken,
+            };
+
+            $.ajax({
+              type: 'POST',
+              contentType: 'application/json',
+              url: '/save-to-mysql',
+              data: JSON.stringify(userData),
+              success: function (response) {
+                console.log('Data saved successfully:', response);
+              },
+              error: function (error) {
+                console.error('Error saving data:', error);
+                console.log('Kakao account response:', userData);
+              }
+            });
+          });
+        }
+      });
+    }
+  </script>
+
+
+  <!--로그인 되어있을때만 ai 추천 클릭이동 가능-->
+  <script>
+    function handleAIClick() {
+      const accessToken = window.Kakao.Auth.getAccessToken();
+
+      if (accessToken) {
+
+        window.location.href = "/aicommunity";
+      } else {
+
+        alert("로그인이 필요합니다.");
+
+      }
+    }
+
+
+  </script>
 </body>
 
 </html>

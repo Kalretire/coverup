@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -33,7 +34,7 @@ import java.util.List;
 public class resttemplate {
     @Value("${file.dir}")
     private String fileDir;
-    private final String url = "http://192.168.0.85:5000/submit";
+    private final String url = "http://192.168.0.40:5000/submit";
 
 
     private zabaldaera memberService;
@@ -101,7 +102,7 @@ public class resttemplate {
         }
     }
     @PostMapping("/recommand")
-    public String requestTorecommand(String fileName, HttpServletResponse responser, byte[] byteArray,@RequestParam("txtzz") String txts) throws Exception {
+    public RedirectView requestTorecommand(String fileName, HttpServletResponse responser, byte[] byteArray,@RequestParam("txtzz") String txts) throws Exception {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(10000000);
         factory.setReadTimeout(10000000);
@@ -158,12 +159,12 @@ public class resttemplate {
 //            recommanddao.setCrime(textData3);
 //            recommanddao.setLoation(textData4);
 //            //int memberinsert = memberService.createMember(facedtao);
-            return "성공";
+            return new RedirectView("aisearchresult");
 
 
         } else {
            System.out.println("Request failed with status code: " + response.getStatusCodeValue());
-           return "null";
+           return new RedirectView("aisearchresult");
        }
     }
 }

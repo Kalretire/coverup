@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
 import java.util.List;
 
 @Controller
@@ -54,7 +55,7 @@ public class startcontroller {
 //        return model;
 //    }
 
-    @GetMapping("AIrecommand")
+    @GetMapping("aicommunity")
     public ModelAndView AIrecommand(ModelAndView model){
         System.out.println("잘나왔음");
         model.setViewName("aicommunity1");
@@ -83,6 +84,10 @@ public class startcontroller {
     @GetMapping("mypage")
     public ModelAndView mypage(ModelAndView model){
         System.out.println("mypage");
+        faceDTO facedtao = new faceDTO();
+        facedtao.setFace_id(3);
+        List<faceDTO> memberList = memberService.selectFace(facedtao.getFace_id());
+        model.addObject("personalcolor", memberList.get(0).getPersonal_color()); // 모델 데이터 추가
         model.setViewName("mypage");
         return model;
     }
@@ -116,7 +121,6 @@ public class startcontroller {
         List<faceDTO> memberList = memberService.selectFace(facedtao.getFace_id());
         model.addObject("personalcolor", memberList.get(0).getPersonal_color()); // 모델 데이터 추가
         model.addObject("faceshape", memberList.get(0).getFace_shape()); // 모델 데이터 추가
-
         model.setViewName("aicommunity"); // 뷰의 이름을 설정해야 합니다.
 
         return model; // ModelView 객체 반환
@@ -126,6 +130,13 @@ public class startcontroller {
     public ModelAndView aisearchresult1(ModelAndView model,faceDTO facedto) {
         StringVO facedtao = new StringVO();
         facedtao.setSkin_id(1);
+        String directoryPath = System.getProperty("user.dir") + "/src/main/resources/static/img/";
+        File directory = new File(directoryPath);
+        File[] files = directory.listFiles();
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println("hi"+files[0]);
+
+
         List<StringVO> memberList = memberService.SelectRecommand(facedtao.getSkin_id());
         model.addObject("aa", memberList.get(0).getEssence()); // 모델 데이터 추가
         model.addObject("bb", memberList.get(0).getLocation()); // 모델 데이터 추가
